@@ -1,0 +1,14 @@
+{
+  "include": [
+    "src"
+  ],
+  "compilerOptions": {
+    "outDir": "build",
+    "module": "ES6",
+    "esModuleInterop": true,
+    "target": "ES6",
+    "strict": true,
+    "noImplicitAny": false,
+    "declaration": true
+  }
+}
