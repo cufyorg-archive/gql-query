@@ -1,7 +1,7 @@
 /**
  * Argument.
  */
-export declare type GraphqlArgument = GraphqlArgument[] | GraphqlArguments | string | number;
+export declare type GraphqlArgument = GraphqlArgument[] | GraphqlArguments | string | number | null;
 /**
  * Args container.
  */

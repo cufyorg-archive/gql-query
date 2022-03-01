@@ -2,6 +2,8 @@
  * Compose a new graphql argument from the given arg.
  */
 export function formatGraphqlArgument(arg) {
+    if (!arg)
+        return 'null';
     if (typeof arg === 'string')
         return `"${arg}"`;
     if (typeof arg === 'number')

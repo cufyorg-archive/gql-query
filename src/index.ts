@@ -1,7 +1,7 @@
 /**
  * Argument.
  */
-export type GraphqlArgument = GraphqlArgument[] | GraphqlArguments | string | number
+export type GraphqlArgument = GraphqlArgument[] | GraphqlArguments | string | number | null
 
 /**
  * Args container.
@@ -19,6 +19,7 @@ export type GraphqlFields =
  * Compose a new graphql argument from the given arg.
  */
 export function formatGraphqlArgument(arg: GraphqlArgument): string {
+    if (!arg) return 'null'
     if (typeof arg === 'string') return `"${arg}"`
     if (typeof arg === 'number') return `${arg}`
     if (Array.isArray(arg)) return `[${arg.map(formatGraphqlArgument).join(',')}]`
