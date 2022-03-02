@@ -1,69 +1,55 @@
 /**
  * Compose a new graphql argument from the given arg.
  */
-export function formatGraphqlArgument(arg) {
-    if (!arg)
+export function formatGraphqlArgument(argument) {
+    if (!argument)
+        // argument: null
         return 'null';
-    if (typeof arg === 'string')
-        return `"${arg}"`;
-    if (typeof arg === 'number')
-        return `${arg}`;
-    if (Array.isArray(arg))
-        return `[${arg.map(formatGraphqlArgument).join(',')}]`;
-    return `{${Object.entries(arg).map(([name, value]) => `${name}:${formatGraphqlArgument(value)}`).join(' ')}}`;
+    if (typeof argument === 'string')
+        // argument: string
+        return `"${argument}"`;
+    if (typeof argument === 'number')
+        // argument: number
+        return `${argument}`;
+    if (Array.isArray(argument))
+        // argument: GraphqlArgument[]
+        return `[${argument.map(formatGraphqlArgument).join(' ')}]`;
+    // argument: GraphqlArguments
+    return `{${Object.entries(argument).map(([name, value]) => name.startsWith('$') ?
+        // value: any
+        `${name.substring(1)}:${value}` :
+        // value: GraphqlArgument
+        `${name}:${formatGraphqlArgument(value)}`).join(' ')}}`;
 }
 /**
  * Compose a new graphql query arguments from the given args object.
  */
-export function formatGraphqlArguments(args) {
-    // runtime type check
-    if (typeof args !== 'object' || Array.isArray(args))
-        throw `Invalid args: ${JSON.stringify(args)}`;
-    if (!Object.keys(args).length)
-        // args: {}
+export function formatGraphqlArguments(_arguments) {
+    if (!Object.keys(_arguments).length)
         return '';
-    // args: { [_: string]: string }
-    return `(${Object.entries(args).map(([name, value]) => `${name}:${formatGraphqlArgument(value)}`).join(' ')})`;
+    return `(${Object.entries(_arguments).map(([name, value]) => name.startsWith('$') ?
+        // value: any
+        `${name.substring(1)}:${value}` :
+        // value: GraphqlArgument
+        `${name}:${formatGraphqlArgument(value)}`).join(' ')})`;
 }
 /**
  * Compose a new graphql query from the given fields.
  */
 export function formatGraphqlQuery(fields) {
-    // runtime type check
-    if (typeof fields !== 'object')
-        throw `Invalid fields: ${JSON.stringify(fields)}`;
     if (!Object.keys(fields).length)
-        // fields: {} | []
         return '';
-    if (Array.isArray(fields))
-        // fields: (string | [string, Fields] | [string, Args, Fields])[]
-        return `{${fields.map(item => {
-            // runtime type check
-            if (typeof item !== 'string' && !Array.isArray(item))
-                throw `Invalid array-field item: ${JSON.stringify(item)}`;
-            if (typeof item === 'string')
-                // item: string
-                return item;
-            if (item.length == 3)
-                // item: [string, Arguments, Fields]
-                return `${item[0]}${formatGraphqlArguments(item[1])}${formatGraphqlQuery(item[2])}`;
-            // item: [string, Arguments]
-            return `${item[0]}${formatGraphqlQuery(item[1])}`;
-        }).join(' ')}}`;
-    // fields: { [_: string]: boolean | Fields | [Args, Fields] }
     return `{${Object.entries(fields).map(([name, value]) => {
-        // runtime type check
-        if (typeof value !== 'boolean' && typeof value !== 'object')
-            throw `Invalid object-field value: ${value}`;
+        if (name.startsWith('$'))
+            // value: any
+            return `${name}:${value}`;
         if (typeof value === 'boolean')
-            // name: string // value: boolean
+            // value: boolean
             return value ? name : '';
-        if (Array.isArray(value) && typeof value[0] === 'object' && !Array.isArray(value[0]))
-            // name: string // value: [Arguments, Fields]
-            // @ts-ignore
+        if (Array.isArray(value))
+            // value: [GraphqlArguments, GraphqlFields]
             return `${name}${formatGraphqlArguments(value[0])}${formatGraphqlQuery(value[1])}`;
-        // name: string // value: Fields
-        // @ts-ignore
+        // value: GraphqlFields
         return `${name}${formatGraphqlQuery(value)}`;
     }).join(' ')}}`;
 }
