@@ -14,17 +14,16 @@ It refers to a representation of the fields of an object, and can be presented i
 ways:
 
 - *Object* and can be represented by mapping each field to its arguments and fields
-- *Array* and can be represented by listing each filed and its arguments and fields
 
 ## Object Fields
 
 A simpler solution so each name mapped to its value. But, fields must be mapped to
-something. (empty fields or arguments are ignored btw)
+something. (empty fields or arguments are ignored and fields starting with `$` are formatted as is)
 
 Example:
 
 ```javascript
-GraphqlQuery({
+formatGraphqlQuery({
     field0: true,
     field1: {
         subfield0: true,
@@ -45,37 +44,6 @@ GraphqlQuery({
         }]
     }]
 })
-```
-
-## Array Fields
-
-Another solution for shorter queries. Since you can pass the name of fields without
-associating it to something. (empty fields and arguments are ignored here too)
-
-Example:
-
-```javascript
-GraphqlQuery([
-    'field0',
-    ['field1', [
-        'subfield0',
-        ['subfield1', [
-            // Sub subfields
-        ]],
-        ['subfield2', {/* Arguments */}, [
-            // Sub subfields
-        ]]
-    ]],
-    ['field2', {/* Arguments */}, [
-        'subfield0',
-        ['subfield1', [
-            // Sub subfields
-        ]],
-        ['subfield2', {/* Arguments */}, [
-            // Sub subfields
-        ]]
-    ]]
-])
 ```
 
 ## Features
