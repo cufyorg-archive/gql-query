@@ -62,9 +62,8 @@ You can install this via NPM with:
 
 ## Browser Install
 
-You can install it in the browser by adding this tag:
+You can install it in the browser by adding this tag (replace `TAG` with the version):
 
 ```html
-
-<script src="https://unpkg.com/gql-query@0.0.1/build/index.js" type="module"></script>
+<script src="https://cdn.jsdelivr.net/gh/cufyorg/gql-query@TAG/build/index.js" type="module"></script>
 ```
